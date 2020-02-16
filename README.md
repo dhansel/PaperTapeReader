@@ -19,5 +19,6 @@ IR phototransistors and wavelength-matched
 IR LEDs. Initial tests with these mounted on a perfboard were very promising,
 so I made two matched PCBs ([emitter](schematics/readerhead-emitter-pcb.pdf) 
 and [sensor](schematics/readerhead-sensor-pcb.pdf)) that can be sandwiched together
-to form the reader head.
+to form the reader head:
 
+![ReaderHeadTop](/images/ReaderHeadTop.jpg|width=200) ![ReaderHeadBottom](/images/ReaderHeadTop.jpg|width=200)
