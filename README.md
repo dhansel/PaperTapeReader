@@ -4,7 +4,7 @@ This is a DIY reader for 8-bit (9-hole) vintage paper tapes.
 
 ![FullPicture](/images/FullPicture.jpg)
 
-You can watch a short demo video here:
+You can watch a short demo video of the reader connected to an [Altair 8800 emulator](https://www.hackster.io/david-hansel/arduino-altair-8800-simulator-3594a6) here:
 <div align="center">
   <a href="https://www.youtube.com/watch?v=uZ2VWKNlPQU"><img src="images/youtube.png" alt="Watch the Video"></a>
 </div>
@@ -42,4 +42,34 @@ In addition to the reader head I also made a main board which does the following
 * Read the (parallel) data from the reader head and send it out on a serial connection
 * Control a motor to automatically run the tape at proper speed given the serial transmission rate
 * Provide a menu system for setting a variety of parameters
+
+<p align="center"><a href="images/mainboard.jpg"><img src="images/mainboard.jpg" width="400"> </a></p>
+
+The board is centered around an Atmega328p running at 3.3V. For the menu system I used a generic
+64x128 OLED display paired with a standard rotary encoder. Both are easy to find on Ebay, for the
+OLED make sure that the pinout matches that on the board (many different versions exist).
+
+There are two serial connections, one labeled "Terminal" and one labeled "Computer". This
+allows the tape reader to be placed between a terminal and a computer. As long as the reader
+is not actively running, all data is just passed between the "Terminal" and "Computer" serial
+ports. When the reader is running, it disconnects the terminal input and sends the tape data
+out to the computer instead.
+
+## Motor Control
+The reader head and main board can be used without a motor by manually pulling the tape,
+however one of the main features is the ability to control the motor as seen in the video.
+
+Motor power is varied using PWM. The PWM setting gets adjusted by a PID controller whose
+parameters can be easily set using the menu system (see below).
+
+Note that there is no direct connection built into the firmware between the serial transmission 
+speed and motor speed. Instead, the PID controller varies the motor power to achieve and hold
+a 10% fill state of the internal transmit buffer. Since PID parameters and basic motor parameters
+are configurable via the menu system, a variety of (DC) motors should be supported.
+
+## Menu System
+
+
+
+
 
