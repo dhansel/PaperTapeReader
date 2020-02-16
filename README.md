@@ -1,6 +1,8 @@
 # Paper Tape Reader
 
-This is a DIY reader for 8-bit (9-hole) vintage paper tapes.
+This is a DIY reader for 8-bit (9-hole) vintage paper tapes. I started working on this because I
+couldn't find any DIY solution online that would allow for fully automated tape playback.
+Hopefully someone will find this interesting/useful!
 
 ![FullPicture](/images/FullPicture.jpg)
 
@@ -66,6 +68,9 @@ Note that there is no direct connection built into the firmware between the seri
 speed and motor speed. Instead, the PID controller varies the motor power to achieve and hold
 a 10% fill state of the internal transmit buffer. Since PID parameters and basic motor parameters
 are configurable via the menu system, a variety of (DC) motors should be supported.
+
+I just used a motor that I had salvaged from an old printer and adjusted the parameters
+by experimentation.
 
 ## Menu System
 
@@ -135,3 +140,14 @@ set to 1 or 2. If so, the compiler will integrate images of certain files (e.g. 
 see the bottom of the [PaperTapeReader.ino](firmware/PaperTapeReader/PaperTapeReader.ino) file).
 You can then select one of these files here. The reader will then compare any data read on the
 tape to the stored data and immediately exit and show an error if a difference is found.
+
+##Mechanical Construction
+
+I kept the mechanical construction pretty simple (using just 1x2s and plywood). Still using the
+Lego axles and wheels for spools from my first prototype because I still haven't found a solution
+that works better than that setup.
+
+The two paper guides you can see in the picture at the top of the page are useful when running at
+lower speeds where motor power regulates up and down. They introduce some drag that stops the
+tape from unspooling too fast (due to momentum) when the motor regulates down. They are not needed
+when only running at full speed.
