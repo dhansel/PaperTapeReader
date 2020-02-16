@@ -9,7 +9,7 @@ You can watch a short demo video here:
   <a href="https://www.youtube.com/watch?v=uZ2VWKNlPQU"><img src="images/youtube.png" alt="Watch the Video"></a>
 </div>
 
-## Building the reader head
+## Reader Head
 When I started with this project, constructing the reader head was
 the most uncertain aspect. I found some other DIY attempts on the web
 but none seemed ideal. I wanted to use miniature photo-transistors that
@@ -27,6 +27,19 @@ to form the reader head:
 
 All resistors on the two boards are 0805 SMD resistors.
 Resistors on the sensor board (with the photo-transistors) are 1k Ohm.
-Resistors on the emitter board (with the LEDs) are 470 Ohm except for the index-hole LED which uses 330 Ohm (to make the LED brighter because the holes are smaller).
+Resistors on the emitter board (with the LEDs) are 470 Ohm except for the index-hole LED which uses 330 Ohm 
+(to make the LED brighter because the holes are smaller). 
+Note that these resistor values were chosen for a **3.3V supply voltage**.
 
 Gerber files for both PCBs are in the [schematics](schematics) subdirectory.
+
+As is the signals from the reader head can be directly attached to the digital inputs of 
+any 3.3V microprocessor and should give clear and stable readings. I have tested with
+black and pink paper tape.
+
+## Main Board
+In addition to the reader head I also made a main board which does the following:
+* Read the (parallel) data from the reader head and send it out on a serial connection
+* Control a motor to automatically run the tape at proper speed given the serial transmission rate
+* Provide a menu system for setting a variety of parameters
+
