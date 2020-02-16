@@ -21,5 +21,11 @@ so I made two matched PCBs ([emitter](schematics/readerhead-emitter-pcb.pdf)
 and [sensor](schematics/readerhead-sensor-pcb.pdf)) that can be sandwiched together
 to form the reader head:
 
-<img src="images/ReaderHeadTop.jpg" width="200"> <img src="images/ReaderHeadBottom.jpg" width="200">
+<p align="center"> <img src="images/ReaderHeadTop.jpg" width="200"> <img src="images/ReaderHeadBottom.jpg" width="200"> </p>
+<p align="center"> <img src="images/ReaderHeadFront.jpg" width="200"> <img src="images/ReaderHeadSide.jpg" width="200"> </p>
 
+All resistors on the two boards are 0805 SMD resistors.
+Resistors on the sensor board (with the photo-transistors) are 1k Ohm.
+Resistors on the emitter board (with the LEDs) are 470 Ohm except for the index-hole LED which uses 330 Ohm (to make the LED brighter because the holes are smaller).
+
+Gerber files for both PCBs are in the [schematics](schematics) subdirectory.
