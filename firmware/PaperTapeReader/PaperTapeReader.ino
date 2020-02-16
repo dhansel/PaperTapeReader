@@ -54,7 +54,7 @@
 #include <SSD1306AsciiAvrI2c.h>
 
 #define DEBUG  0
-#define COMPARE_PROG_SET 1
+#define COMPARE_PROG_SET 0
 #define BUFSIZE 500
 
 long CPS, LDL, baud, bits, parity, stopbits, motor_min_pwr, motor_max_pwr, motor_initial_pwr;
