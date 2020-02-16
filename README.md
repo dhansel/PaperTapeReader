@@ -141,7 +141,7 @@ see the bottom of the [PaperTapeReader.ino](firmware/PaperTapeReader/PaperTapeRe
 You can then select one of these files here. The reader will then compare any data read on the
 tape to the stored data and immediately exit and show an error if a difference is found.
 
-##Mechanical Construction
+## Mechanical Construction
 
 I kept the mechanical construction pretty simple (using just 1x2s and plywood). Still using the
 Lego axles and wheels for spools from my first prototype because I still haven't found a solution
