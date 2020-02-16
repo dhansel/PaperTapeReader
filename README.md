@@ -124,9 +124,14 @@ calling SetTunings(0.1,0.2,0.15).
 
 <img src="images/menu5.jpg" width="200">
 
-This configures statistics display and **COMP** mode. The **COMP** (compare mode) item 
-is visible only if "#define COMPARE_PROG_SET" in the firmware is set to 1 or 2.
-If so, the compiler will integrate images of certain files (e.g. 4k BASIC, for details
+This configures statistics display and **COMP** mode. 
+
+If **STAT** is set to Y then after reading a tape and finishing to send the data, the reader
+will show a statistics sreen, displaying CHR (number of characters sent), SEC (number of 
+seconds used to send) and CPS (characters per second) information.
+
+The **COMP** (compare mode) item is visible only if "#define COMPARE_PROG_SET" in the firmware is 
+set to 1 or 2. If so, the compiler will integrate images of certain files (e.g. 4k BASIC, for details
 see the bottom of the [PaperTapeReader.ino](firmware/PaperTapeReader/PaperTapeReader.ino) file).
 You can then select one of these files here. The reader will then compare any data read on the
 tape to the stored data and immediately exit and show an error if a difference is found.
