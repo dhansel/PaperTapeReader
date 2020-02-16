@@ -21,4 +21,4 @@ so I made two matched PCBs ([emitter](schematics/readerhead-emitter-pcb.pdf)
 and [sensor](schematics/readerhead-sensor-pcb.pdf)) that can be sandwiched together
 to form the reader head:
 
-![ReaderHeadTop](/images/ReaderHeadTop.jpg|width=200) ![ReaderHeadBottom](/images/ReaderHeadTop.jpg|width=200)
+![ReaderHeadTop](/images/ReaderHeadTop.jpg | width=200) ![ReaderHeadBottom](/images/ReaderHeadTop.jpg | width=200)
