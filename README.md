@@ -4,13 +4,12 @@ This is a DIY reader for 8-bit (9-hole) vintage paper tapes.
 
 ![FullPicture](/images/FullPicture.jpg)
 
-For a short demonstration see my video here:
-<iframe width="560" height="315" src="https://www.youtube.com/embed/uZ2VWKNlPQU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-https://www.youtube.com/watch?v=uZ2VWKNlPQU
+You can watch a short demo video here:
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=uZ2VWKNlPQU"><img src="images/youtube.png" alt="Watch the Video"></a>
+</div>
 
 ## Building the reader head
-
 When I started with this project, constructing the reader head was
 the most uncertain aspect. I found some other DIY attempts on the web
 but none seemed ideal. I wanted to use miniature photo-transistors that
