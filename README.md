@@ -5,6 +5,8 @@ This is a DIY reader for 8-bit (9-hole) vintage paper tapes.
 ![FullPicture](/images/FullPicture.jpg)
 
 For a short demonstration see my video here:
+<iframe width="560" height="315" src="https://www.youtube.com/embed/uZ2VWKNlPQU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 https://www.youtube.com/watch?v=uZ2VWKNlPQU
 
 ## Building the reader head
