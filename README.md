@@ -69,6 +69,27 @@ are configurable via the menu system, a variety of (DC) motors should be support
 
 ## Menu System
 
+The menu system is operated by the rotary controller. The current item is marked by a ">"
+symbol and rotating will move between items and screens. Generally, a short button push 
+on an item advances it to its next setting (e.g. next greater baud rate). A long button push
+puts it into "modify" mode where rotating the controller changes the setting. Exit "modify"
+mode via a short button push.
+
+![Menu1](images/menu1.jpg)
+
+The first (and main) menu screen. The three items here (PLAY, PLAY+LDL, FFWD) are not settings
+but actions:
+* A short push on PLAY will start playing the tape. Push again to stop playing. Play stops
+automatically if no index hole is seen within 2 seconds after starting or 1 second while running.
+* A short push on PLAY+LDL starts playing **with line delay**. Line delay causes the reader to
+pause for a configurable amout of time (see second screen) after sending a NEWLINE character.
+This can be necessary if the receiving computer needs extra time to process a newline.
+* A short push on FFWD will start fast-forwarding the tape. It just runs the motor at full speed
+until another push exists fast forward mode.
+* A long push on either PLAY or PLAY+LDL is a shortcut to FFWD
+* A long push on FFWD enters a test mode. In this mode the display shows the current state of all 
+data holes (index hole is marked with a "^"). Rotating the controller adjusts motor power between
+0 and 255. A short push exits test mode.
 
 
 
