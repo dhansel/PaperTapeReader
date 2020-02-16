@@ -75,22 +75,58 @@ on an item advances it to its next setting (e.g. next greater baud rate). A long
 puts it into "modify" mode where rotating the controller changes the setting. Exit "modify"
 mode via a short button push.
 
-![Menu1](images/menu1.jpg)
+<img src="images/menu1.jpg" width="200">
 
 The first (and main) menu screen. The three items here (PLAY, PLAY+LDL, FFWD) are not settings
 but actions:
-* A short push on PLAY will start playing the tape. Push again to stop playing. Play stops
+* A short push on **PLAY** will start playing the tape. Push again to stop playing. Play stops
 automatically if no index hole is seen within 2 seconds after starting or 1 second while running.
-* A short push on PLAY+LDL starts playing **with line delay**. Line delay causes the reader to
+* A short push on **PLAY+LDL** starts playing **with line delay**. Line delay causes the reader to
 pause for a configurable amout of time (see second screen) after sending a NEWLINE character.
 This can be necessary if the receiving computer needs extra time to process a newline.
-* A short push on FFWD will start fast-forwarding the tape. It just runs the motor at full speed
+* A short push on **FFWD** will start fast-forwarding the tape. It just runs the motor at full speed
 until another push exists fast forward mode.
 * A long push on either PLAY or PLAY+LDL is a shortcut to FFWD
 * A long push on FFWD enters a test mode. In this mode the display shows the current state of all 
 data holes (index hole is marked with a "^"). Rotating the controller adjusts motor power between
 0 and 255. A short push exits test mode.
 
+The bottom row shows the currently selected serial parameters and characters-per-second setting.
 
+<img src="images/menu2.jpg" width="200">
 
+This screen configures transmission parameters:
 
+* The **CPS** setting specifies a *maximum* characters-per-second setting. If this is set to less 
+than what the serial baud rate allows the reader will pause between sending characters so as to
+not exceed the CPS setting.
+* The **LDL** setting specifies the line delay in milliseconds (see PLAY+LDL above)
+* The **SER** setting specifies serial parameters. Possible baud rates range from 110-115200.
+Parity can be even, odd or none and one or two stop bits are supported.
+
+<img src="images/menu3.jpg" width="200">
+
+This screen configures basic motor parameters:
+
+* Set the **MIN** setting to the minimum power required to keep the motor running. You can experiment
+with this in the test mode on the first screen.
+* The **MAX** setting allows to limit the maximum motor power if that is necessary
+* The **INI** setting limits the *initial* motor power which can be necessary to avoid immediately
+overflowing the send buffer when starting to read.
+
+<img src="images/menu4.jpg" width="200">
+
+This screen configures the PID controller parameters. The firmware uses the 
+[Arduino PID Controller](https://playground.arduino.cc/Code/PIDLibrary/) library.
+The values specified here are the parameters to the [SetTunings()](https://playground.arduino.cc/Code/PIDLibrarySetTunings)
+function **in steps of 1/100**. For example, setting P=10,I=20,D=15 is equivalent to
+calling SetTunings(0.1,0.2,0.15).
+
+<img src="images/menu5.jpg" width="200">
+
+This configures statistics display and **COMP** mode. The **COMP** (compare mode) item 
+is visible only if "#define COMPARE_PROG_SET" in the firmware is set to 1 or 2.
+If so, the compiler will integrate images of certain files (e.g. 4k BASIC, for details
+see the bottom of the [PaperTapeReader.ino](firmware/PaperTapeReader/PaperTapeReader.ino) file).
+You can then select one of these files here. The reader will then compare any data read on the
+tape to the stored data and immediately exit and show an error if a difference is found.
