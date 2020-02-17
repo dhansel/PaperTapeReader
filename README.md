@@ -131,7 +131,8 @@ This screen configures basic motor parameters:
 
 * Set the **MIN** setting to the minimum power required to keep the motor running. You can experiment
 with this in the test mode on the first screen.
-* The **MAX** setting allows to limit the maximum motor power if that is necessary
+* The **MAX** setting allows to limit the maximum motor power if that is necessary. Setting MAX to 0 will
+put the reader into **manual mode**, where the firmware assumes you will be pulling the tape manually.
 * The **INI** setting limits the *initial* motor power which can be necessary to avoid immediately
 overflowing the send buffer when starting to read.
 
