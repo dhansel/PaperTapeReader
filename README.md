@@ -35,9 +35,9 @@ Note that these resistor values were chosen for a **3.3V supply voltage**.
 
 Gerber files for both PCBs are in the [schematics](schematics) subdirectory.
 
-As is the signals from the reader head can be directly attached to the digital inputs of 
-any 3.3V microprocessor and should give clear and stable readings. I have tested with
-black and pink paper tape.
+As is, the signals from the reader head can be directly attached to the digital inputs of 
+any 3.3V microprocessor and should give clear and stable readings. I have tested the reader 
+with black as well as pink paper tape.
 
 ## Main Board
 In addition to the reader head I also made a main board which does the following:
@@ -47,15 +47,23 @@ In addition to the reader head I also made a main board which does the following
 
 <p align="center"><a href="images/mainboard.jpg"><img src="images/mainboard.jpg" width="400"> </a></p>
 
-The board is centered around an Atmega328p running at 3.3V. For the menu system I used a generic
-64x128 OLED display paired with a standard rotary encoder. Both are easy to find on Ebay, for the
-OLED make sure that the pinout matches that on the board (many different versions exist).
+The board is centered around an Atmega328p running at 3.3V. The [schematic](schematics/mainboard-schematic.pdf), 
+[PCB layout](schematics/mainboard-pcb.pdf) and Gerber files are in the [schematics](schematics) subdirectory.
+
+To display and navigate the menu system I used a 128x64 OLED display paired with a standard 
+rotary encoder. Both are easy to find on Ebay, for the OLED make sure that the pinout matches 
+that on the board (many different versions exist). The relay on the board is a 
+[Omron G5V-1-DC3](https://www.digikey.com/product-detail/en/omron-electronics-inc-emc-div/G5V-1-DC3/Z2204-ND/369039)
+and the voltage regulator is a 
+[Recom R-78E3.3-1.0](https://www.digikey.com/products/en?keywords=RECOM%20POWER%20%20%20R-78E3.3-1.0). 
+Note that the crystal must be 8MHz which is the maximum clock speed for an Atmega328P running at 3.3V.
+All other components are standard and should be labeled in the [schematics](schematics/mainboard-schematic.pdf)
 
 There are two serial connections, one labeled "Terminal" and one labeled "Computer". This
 allows the tape reader to be placed between a terminal and a computer. As long as the reader
 is not actively running, all data is just passed between the "Terminal" and "Computer" serial
 ports. When the reader is running, it disconnects the terminal input and sends the tape data
-out to the computer instead.
+out to the computer instead. The TX LED is on while the reader is transmitting.
 
 ## Motor Control
 The reader head and main board can be used without a motor by manually pulling the tape,
