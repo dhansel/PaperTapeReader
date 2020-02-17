@@ -65,6 +65,14 @@ is not actively running, all data is just passed between the "Terminal" and "Com
 ports. When the reader is running, it disconnects the terminal input and sends the tape data
 out to the computer instead. The TX LED is on while the reader is transmitting.
 
+To program the Atmega328p you need to use a separate programmer. There is no ICSP header or serial
+connection for programming on the board as the corresponding pinsare already in use otherwise. 
+I personally use a
+[MiniPro](https://www.amazon.com/Signstek-TL866PLUS-Universal-MiniPro-Programmer/dp/B00K73TSLM) but
+you can also just use an [Arduino Uno](https://www.arduino.cc/en/tutorial/arduinoISP).
+When compiling the [sketch](firmware/PaperTapeReader), make sure to set the board as 
+"Arduino Pro or Pro Mini" and processor as "Atmega328P 3.3V 8MHz".
+
 ## Motor Control
 The reader head and main board can be used without a motor by manually pulling the tape,
 however one of the main features is the ability to control the motor as seen in the video.
