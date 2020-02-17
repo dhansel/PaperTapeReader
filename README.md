@@ -123,7 +123,7 @@ than what the serial baud rate allows the reader will pause between sending char
 not exceed the CPS setting.
 * The **LDL** setting specifies the line delay in milliseconds (see PLAY+LDL above)
 * The **SER** setting specifies serial parameters. Possible baud rates range from 110-115200.
-Parity can be even, odd or none and one or two stop bits are supported.
+Number of data bits can be 5-8. Parity can be even, odd or none and one or two stop bits are supported.
 
 <img src="images/menu3.jpg" width="200">
 
