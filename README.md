@@ -155,14 +155,15 @@ seconds used to send) and CPS (characters per second) information.
 The **COMP** (compare mode) item is visible only if "#define COMPARE_PROG_SET" in the firmware is 
 set to 1 or 2. If so, the compiler will integrate images of certain files (e.g. 4k BASIC, for details
 see the bottom of the [PaperTapeReader.ino](firmware/PaperTapeReader/PaperTapeReader.ino) file).
-You can then select one of these files here. The reader will then compare any data read on the
-tape to the stored data and immediately exit and show an error if a difference is found.
+You can then select one of these files here. The reader will compare any data read from the
+tape to the stored data and immediately stop and show an error if a difference is found.
 
 ## Mechanical Construction
 
-I kept the mechanical construction pretty simple (using just 1x2s and plywood). Still using the
-Lego axles and wheels for spools from my first prototype because I still haven't found a solution
-that works better than that setup.
+I kept the mechanical construction simple, just using 1x2s and plywood. I am still using the
+Lego axles and wheels for spools from my first prototype because I haven't found a solution
+that works better than that setup. If anybody knows where to get small-ish 1" wide plastic
+spools for paper tape then please let me know!
 
 The two paper guides you can see in the picture at the top of the page are useful when running at
 lower speeds where motor power regulates up and down. They introduce some drag that stops the
