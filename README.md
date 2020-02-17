@@ -149,5 +149,4 @@ that works better than that setup.
 
 The two paper guides you can see in the picture at the top of the page are useful when running at
 lower speeds where motor power regulates up and down. They introduce some drag that stops the
-tape from unspooling too fast (due to momentum) when the motor regulates down. They are not needed
-when only running at full speed.
+tape from flapping around when the motor regulates down. They are not needed when running at full speed.
