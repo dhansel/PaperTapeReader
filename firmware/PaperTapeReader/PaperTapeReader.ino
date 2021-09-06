@@ -55,7 +55,7 @@
 
 
 // include some pre-defined tapes in the program (to aid testing, see bottom of this file)
-#define COMPARE_PROG_SET 1
+#define COMPARE_PROG_SET 0
 
 // print debug information to serial interface (instead of regular output data)
 #define DEBUG  0
