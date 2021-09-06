@@ -53,8 +53,14 @@
 #include <SSD1306Ascii.h>
 #include <SSD1306AsciiAvrI2c.h>
 
+
+// include some pre-defined tapes in the program (to aid testing, see bottom of this file)
+#define COMPARE_PROG_SET 1
+
+// print debug information to serial interface (instead of regular output data)
 #define DEBUG  0
-#define COMPARE_PROG_SET 0
+
+// size of internal buffer
 #define BUFSIZE 500
 
 long CPS, LDL, baud, bits, parity, stopbits, motor_min_pwr, motor_max_pwr, motor_initial_pwr;
@@ -206,7 +212,7 @@ const MenuItemStruct menuItems[MENUITEMNUM] PROGMEM =
     {1, 2, 2, 0, {0}, 0, NULL},
     {2, 5, 0, 4, {13, 10, 30, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, MAXLONG}, MAXLONG, &CPS},
     {2, 5, 1, 4, {-1, 50, 50, 500}, 150, &LDL},
-    {2, 5, 2, 6, {12, 110, 150, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200}, 9600, &baud},
+    {2, 5, 2, 6, {14, 55, 75, 110, 150, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200}, 9600, &baud},
     {2, 5, 3, 1, {4, 5, 6, 7, 8}, 8, &bits},
     {2, 7, 3, 1, {3+128, 'E', 'N', 'O'}, 'N', &parity},
     {2, 9, 3, 1, {2, 1, 2}, 1, &stopbits},
@@ -218,9 +224,11 @@ const MenuItemStruct menuItems[MENUITEMNUM] PROGMEM =
     {4, 5, 3, 3, {-1, 0, 1, 999},   0, &motor_D},
     {5, 8, 2, 1, {2+128, 'N', 'Y'}, 'N', &show_stats},
 #if COMPARE_PROG_SET==1
-    {5, 8, 3, 1, {4+128, '-', 'B', 'L', 'T'}, '-', &compare_mode},
+    {5, 8, 3, 1, {3+128, '-', 'B', 'L'}, '-', &compare_mode},
 #elif COMPARE_PROG_SET==2
     {5, 8, 3, 1, {2+128, '-', 'W'}, '-', &compare_mode},
+#elif COMPARE_PROG_SET==3
+    {5, 8, 3, 1, {2+128, '-', 'T'}, '-', &compare_mode},
 #endif
   };
 
@@ -320,7 +328,7 @@ bool stepCurrentItemValue(char direction)
 }
 
 
-bool saveCurrentItemValue()
+void saveCurrentItemValue()
 {
   EEPROM.put(4+4*currentItem, *(currentItemInfo.value));
 }
@@ -537,6 +545,108 @@ void handle_menu()
 }
 
 
+
+// -------------------------------------------------------------------------------------------------
+//                              Use software serial for less than 150 baud
+// -------------------------------------------------------------------------------------------------
+
+
+static bool useSoftSerial;
+static byte bitCounter, totalBits;
+static unsigned int microsPerBit, regShiftOut, stopBitMask;
+static unsigned long prevSend;
+
+static byte parityTable[32] = {0x96, 0x69, 0x69, 0x96, 0x69, 0x96, 0x96, 0x69,
+                               0x69, 0x96, 0x96, 0x69, 0x96, 0x69, 0x69, 0x96,
+                               0x69, 0x96, 0x96, 0x69, 0x96, 0x69, 0x69, 0x96,
+                               0x96, 0x69, 0x69, 0x96, 0x69, 0x96, 0x96, 0x69};
+
+#define GET_EVEN_PARITY(d) (parityTable[(d)/8] & (1<<((d)&7)))
+
+#define SERIAL_BUFFER_SIZE (useSoftSerial ? 1 : 64)
+
+void beginSoftSerial(unsigned int baud)
+{
+  microsPerBit  = 1000000ul / baud;
+  bitCounter = 0xff;
+
+  totalBits = bits + stopbits + (parity!='N');
+  stopBitMask = ((1<<stopbits)-1) << (bits + (parity!='N'));
+}
+
+
+void writeSoftSerial(byte data)
+{
+  if( bitCounter==0xff )
+    {
+      // copy data to shift register
+      regShiftOut = data & ((1<<bits)-1);
+
+      // compute parity
+      if( (parity=='O' && !GET_EVEN_PARITY(regShiftOut)) || (parity=='E' && GET_EVEN_PARITY(regShiftOut)) )
+        regShiftOut |= 1 << bits;
+
+      regShiftOut |= stopBitMask;
+      bitCounter = totalBits;
+
+      // send start bit
+      PORTD &= ~0x02;
+      prevSend = micros();
+    }
+}
+
+
+void handleSoftSerial()
+{
+  // send next data bit
+  if( bitCounter<0xff && (micros()-prevSend)>=microsPerBit )
+    {
+      if( bitCounter>0 ) { if( regShiftOut & 0x01 ) PORTD |= 0x02; else PORTD &= ~0x02; }
+      prevSend += microsPerBit;
+      regShiftOut >>= 1;
+      bitCounter--;
+    }
+}
+
+
+void initSerial(long baud)
+{
+  // set UART parameters
+  if( baud < 150 )
+    {
+      digitalWrite(1, HIGH);
+      Serial.end();
+      beginSoftSerial(baud);
+      useSoftSerial = true;
+      bitCounter=0xff;
+    }
+  else
+    {
+      Serial.end();
+      Serial.begin(baud, getSerialConfig());
+      useSoftSerial = false;
+    }
+}
+
+
+inline void writeSerial(byte data)
+{
+  if( useSoftSerial )
+    writeSoftSerial(data);
+  else
+    Serial.write(data);
+}
+
+
+inline int serialAvailableForWrite()
+{
+  if( useSoftSerial )
+    return bitCounter==0xFF ? 1 : 0;
+  else
+    return Serial.availableForWrite();
+}
+
+
 // -------------------------------------------------------------------------------------------------
 //                                           Main functions   
 // -------------------------------------------------------------------------------------------------
@@ -560,7 +670,7 @@ volatile bool running = false;
 volatile int nIndexPulses = 0, compare_data_ptr = 0, error = 0;
 volatile unsigned long prevIndexPulseTime = 0, read_timeout = 0;
 
-PID myPID(&buffer_len, &motor_power, &buffer_len_setpoint, 2, 5, 1, DIRECT);
+PID myPID((double *) &buffer_len, &motor_power, &buffer_len_setpoint, 2, 5, 1, DIRECT);
 
 
 inline int  compare_data_size(int i);
@@ -581,7 +691,7 @@ inline int buffer_size()
 
 inline byte buffer_get()
 {
-  if ( buffer_len > 0 )
+  if( buffer_len > 0 )
     {
       noInterrupts();
       byte b = buffer[buffer_start++];
@@ -590,6 +700,8 @@ inline byte buffer_get()
       interrupts();
       return b;
     }
+  else
+    return 0;
 }
 
 
@@ -627,8 +739,7 @@ void send_data_start()
   Serial.print(F("SEND_START: "));
   Serial.print(baud); Serial.print(F(" / 0x")); Serial.println(getSerialConfig(), HEX);
 #else
-  Serial.end();
-  Serial.begin(baud, getSerialConfig());
+  initSerial(baud);
 #endif
   digitalWrite(A3, HIGH);
 }
@@ -653,7 +764,8 @@ void showStats()
   oled.println(ds%10);
 
   oled.print(F("CPS: ")); 
-  oled.println(1000*data_num_chars/(data_stop_time-data_start_time));
+  unsigned int i = 10000*data_num_chars/(data_stop_time-data_start_time);
+  oled.println((i+5)/10);
 
   oled.print(F("   >OK"));
   wait_button_press();
@@ -835,7 +947,7 @@ void handle_boost()
 {
   // boost motor if it appears to be stalled
   unsigned long t = micros()-prevIndexPulseTime;
-  if( motor_power < motor_min_pwr+10 && t > 30000 && motorMode==MOTOR_AUTO )
+  if( motor_power < motor_min_pwr+10 && t > 30000 && t > (2*UPC) && motorMode==MOTOR_AUTO )
     {
       motor_power += 3;
       analogWrite(3, motor_power+.5);
@@ -1041,7 +1153,7 @@ ISR(PCINT0_vect)
       if( nIndexPulses >= 5 )
         {
           // set up timer1 to delay capture until data is more stable to read
-          OCR1A  = min(td/4, 5000); // set up for output compare match A at N microseconds
+          OCR1A  = min(td/4, UPC<50000 ? 5000 : 50000); // set up for output compare match A at N microseconds
           TCNT1  = 0;               // reset timer
           TIFR1  = bit(OCF1A);      // reset output compare match A interrupt flag
           TIMSK1 = bit(OCIE1A);     // enable timer interrupt on output compare match A
@@ -1072,7 +1184,7 @@ void setup()
   pinMode(A3, OUTPUT);
 
   // set PWM frequency to 15686 Hz (8MHz clock, no prescaling, timer counts to 510)
-  TCCR2B = TCCR2B & B11111000 | B00000001;
+  TCCR2B = (TCCR2B & B11111000) | B00000001;
 
   setupMenu();
 
@@ -1190,14 +1302,17 @@ void loop()
         }
     }
 
+  // handle software serial if necessary
+  if( useSoftSerial ) handleSoftSerial();
+
   // send buffered data
   unsigned long t;
   static unsigned long sendnext = 0;
-  if( !buffer_empty() && (t = micros()) >= sendnext && Serial.availableForWrite() )
+  if( !buffer_empty() && (t = micros()) >= sendnext && serialAvailableForWrite()>0 )
     {
       byte b = buffer_get();
 #if DEBUG==0
-     Serial.write(b);
+     writeSerial(b);
 #endif
       if( show_stats=='Y' )
         {
@@ -1209,11 +1324,14 @@ void loop()
       if( (b==10) && currentItem==1 ) 
         {
           // sending newline and line-delay enabled => add delay
-          sendnext = t + LDL * 1000l + long(64-Serial.availableForWrite()) * UPC;
+          sendnext = t + LDL * 1000l + long(SERIAL_BUFFER_SIZE-serialAvailableForWrite()) * UPC;
 
           // reduce buffer setpoint (will cause PID to reduce motor speed)
-          buffer_len_setpoint -= 10;
-          if( buffer_len_setpoint<25 ) buffer_len_setpoint = 25;
+          if( UPC < 10000 )
+            {
+              buffer_len_setpoint -= 10;
+              if( buffer_len_setpoint<25 ) buffer_len_setpoint = 25;
+            }
 #if DEBUG>0
           Serial.println(F("NL"));
 #endif
@@ -1249,19 +1367,19 @@ void loop()
 // -------------------------------------------------------------------------------------------------
 
 
-// 4k BASIC 3.2
+// MITS 4k BASIC 3.2 (binary):
 // http://altairclone.com/downloads/basic/Paper%20Tape%20and%20Cassette/4K%20BASIC%20Ver%203-2.tap
 #include "basic.h"
 
-// Lunar Lander BASIC program:
+// Lunar Lander BASIC program (ASCII):
 // http://altairclone.com/downloads/basic/BASIC%20Programs/4K%20BASIC/lander4k.bas
 #include "lunar.h"
 
-// Tic-Tac-Toe BASIC program:
+// Tic-Tac-Toe BASIC program (ASCII):
 // http://altairclone.com/downloads/basic/BASIC%20Programs/4K%20BASIC/tictac4k.bas
 #include "tictactoe.h"  
   
-// Wumpus BASIC program:
+// Wumpus BASIC program (ASCII):
 // http://altairclone.com/downloads/basic/BASIC%20Programs/4K%20BASIC/wumpus4k.bas
 #include "wumpus.h"  
   
@@ -1273,9 +1391,10 @@ inline int compare_data_size(int prog)
 #if COMPARE_PROG_SET==1
     case 'B'  : return sizeof(basic);
     case 'L'  : return sizeof(lunar);
-    case 'T'  : return sizeof(tictac);
 #elif COMPARE_PROG_SET==2
     case 'W'  : return sizeof(wumpus);
+#elif COMPARE_PROG_SET==3
+    case 'T'  : return sizeof(tictac);
 #endif
     default   : return 0;
     }
@@ -1289,9 +1408,10 @@ inline byte compare_data_read(int prog, int i)
 #if COMPARE_PROG_SET==1
     case 'B'  : return pgm_read_byte_near(basic + i);
     case 'L'  : return pgm_read_byte_near(lunar + i);
-    case 'T'  : return pgm_read_byte_near(tictac + i);
 #elif COMPARE_PROG_SET==2
     case 'W'  : return pgm_read_byte_near(wumpus + i);
+#elif COMPARE_PROG_SET==2
+    case 'T'  : return pgm_read_byte_near(tictac + i);
 #endif
     default   : return 0xFF;
     }
