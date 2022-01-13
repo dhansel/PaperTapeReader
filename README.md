@@ -66,7 +66,7 @@ ports. When the reader is running, it disconnects the terminal input and sends t
 out to the computer instead. The TX LED is on while the reader is transmitting.
 
 To program the Atmega328p you need to use a separate programmer. There is no ICSP header or serial
-connection for programming on the board as the corresponding pinsare already in use otherwise. 
+connection for programming on the board as the corresponding pins are already in use otherwise. 
 I personally use a
 [MiniPro](https://www.amazon.com/Signstek-TL866PLUS-Universal-MiniPro-Programmer/dp/B00K73TSLM) but
 you can also just use an [Arduino Uno](https://www.arduino.cc/en/tutorial/arduinoISP).
